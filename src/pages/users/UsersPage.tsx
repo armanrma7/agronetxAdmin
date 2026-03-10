@@ -4,6 +4,7 @@ import { Button, Input, Select, Space, notification } from "antd";
 import { DataTable, DataTableColumn, RowAction } from "../../components/table/DataTable";
 import { apiClient } from "../../api/client";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
+import { normalizePaginated } from "../../utils/pagination";
 import { CreateUserModal } from "../../components/forms/CreateUserModal";
 
 interface User {
@@ -42,7 +43,7 @@ export const UsersPage = () => {
       debouncedName
     ],
     queryFn: async () => {
-      const res = await apiClient.get<User[]>("/admin/users", {
+      const res = await apiClient.get("/admin/users", {
         params: {
           page,
           limit: pageSize,
@@ -52,8 +53,7 @@ export const UsersPage = () => {
           name: debouncedName || undefined
         }
       });
-      const items = Array.isArray(res.data) ? res.data : [];
-      return { items, total: items.length };
+      return normalizePaginated<User>(res.data, ["users"]);
     }
   });
 

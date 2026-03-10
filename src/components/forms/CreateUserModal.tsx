@@ -138,9 +138,9 @@ export const CreateUserModal = ({ open, onClose, onCreated }: CreateUserModalPro
             options={villages.map((v) => ({ label: v.name_am, value: v.id }))}
           />
         </Form.Item>
-        <Form.Item label="Locked" name="is_locked" valuePropName="checked" initialValue={false}>
+        {/* <Form.Item label="Locked" name="is_locked" valuePropName="checked" initialValue={false}>
           <Switch />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item>
           <Button type="primary" htmlType="submit" block loading={loading}>
             Create

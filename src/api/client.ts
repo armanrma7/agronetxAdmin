@@ -2,9 +2,11 @@ import axios from "axios";
 import { getStoredTokens, storeTokens, removeStoredTokens } from "../utils/authStorage";
 import type { AuthTokens } from "../types/auth";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "https://42bafc8c67e9.ngrok.app";
+
 export const apiClient = axios.create({
-  // Swagger UI is served at /api, but the OpenAPI `paths` are rooted at the host (see /api-json).
-  baseURL: "https://42bafc8c67e9.ngrok.app",
+  baseURL: API_BASE_URL,
   withCredentials: false
 });
 
