@@ -5,6 +5,7 @@ import { DataTable, DataTableColumn, RowAction } from "../../components/table/Da
 import { apiClient } from "../../api/client";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { normalizePaginated } from "../../utils/pagination";
+import { StatusTag } from "../../components/StatusTag";
 
 interface Application {
   id: string;
@@ -105,7 +106,11 @@ export const ApplicationsPage = () => {
 
   const columns: DataTableColumn<Application>[] = [
     { key: "id", title: "ID" },
-    { key: "status", title: "Status" },
+    {
+      key: "status",
+      title: "Status",
+      render: (_, record) => <StatusTag status={record.status ?? "—"} variant="application" />
+    },
     { key: "created_at", title: "Created At" }
   ];
 

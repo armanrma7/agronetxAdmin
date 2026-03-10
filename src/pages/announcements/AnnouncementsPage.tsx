@@ -5,6 +5,7 @@ import { apiClient } from "../../api/client";
 import { DataTable, DataTableColumn, RowAction } from "../../components/table/DataTable";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { normalizePaginated } from "../../utils/pagination";
+import { StatusTag } from "../../components/StatusTag";
 
 interface Announcement {
   id: string;
@@ -168,7 +169,7 @@ export const AnnouncementsPage = () => {
     {
       key: "status",
       title: "Status",
-      render: (_, record) => record.status
+      render: (_, record) => <StatusTag status={record.status} variant="announcement" />
     },
     {
       key: "price",

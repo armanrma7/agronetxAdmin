@@ -10,7 +10,7 @@ export interface EditUserModalUser {
   phone: string;
   full_name?: string;
   user_type?: UserType;
-  user_status?: UserStatus;
+  account_status?: UserStatus;
   is_locked?: boolean;
 }
 
@@ -25,7 +25,7 @@ interface EditUserFormValues {
   full_name: string;
   phone: string;
   user_type: UserType;
-  user_status: UserStatus;
+  account_status: UserStatus;
   is_locked: boolean;
 }
 
@@ -39,7 +39,7 @@ export const EditUserModal = ({ open, user, onClose, onUpdated }: EditUserModalP
         full_name: user.full_name ?? "",
         phone: user.phone,
         user_type: user.user_type ?? "farmer",
-        user_status: user.user_status ?? "active",
+        account_status: user.account_status ?? "active",
         is_locked: Boolean(user.is_locked)
       });
     }
@@ -53,7 +53,7 @@ export const EditUserModal = ({ open, user, onClose, onUpdated }: EditUserModalP
         full_name: values.full_name,
         phone: values.phone,
         user_type: values.user_type,
-        user_status: values.user_status,
+        account_status: values.account_status,
         is_locked: values.is_locked
       });
       notification.success({ message: "User updated" });
@@ -101,7 +101,7 @@ export const EditUserModal = ({ open, user, onClose, onUpdated }: EditUserModalP
         </Form.Item>
         <Form.Item
           label="Account status"
-          name="user_status"
+          name="account_status"
           rules={[{ required: true, message: "Please select account status" }]}
         >
           <Select<UserStatus>

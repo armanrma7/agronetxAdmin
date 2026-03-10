@@ -124,7 +124,7 @@ export const AdminLayout = () => {
           >
             <Space style={{ cursor: "pointer" }}>
               <UserOutlined />
-              <span>{user?.phone ?? "Admin"}</span>
+              <span>{user?.fullName ?? user?.phone ?? "Admin"}</span>
             </Space>
           </Dropdown>
         </Header>

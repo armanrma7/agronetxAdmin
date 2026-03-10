@@ -6,6 +6,7 @@ import { apiClient } from "../../api/client";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { normalizePaginated } from "../../utils/pagination";
 import { CreateUserModal } from "../../components/forms/CreateUserModal";
+import { StatusTag, UserTypeTag } from "../../components/StatusTag";
 
 interface User {
   id: string;
@@ -13,12 +14,13 @@ interface User {
   full_name?: string;
   user_type?: "farmer" | "company" | "admin";
   user_status?: "active" | "blocked" | "inactive" | "pending";
+  account_status?: "active" | "blocked" | "inactive" | "pending";
   company_name?: string;
   is_locked?: boolean;
 }
 
 type UserTypeFilter = NonNullable<User["user_type"]>;
-type UserStatusFilter = NonNullable<User["user_status"]>;
+type UserStatusFilter = NonNullable<User["account_status"]>;
 
 export const UsersPage = () => {
   const queryClient = useQueryClient();
@@ -61,11 +63,11 @@ export const UsersPage = () => {
     mutationFn: (payload: {
       userId: string;
       user_type?: UserTypeFilter;
-      user_status?: UserStatusFilter;
+      account_status?: UserStatusFilter;
     }) =>
       apiClient.patch(`/admin/users/${payload.userId}`, {
         user_type: payload.user_type,
-        user_status: payload.user_status
+        account_status: payload.account_status
       }),
     onSuccess: () => {
       notification.success({ message: "User updated" });
@@ -87,8 +89,16 @@ export const UsersPage = () => {
   const columns: DataTableColumn<User>[] = [
     { key: "full_name", title: "Name" },
     { key: "phone", title: "Phone" },
-    { key: "user_type", title: "Type" },
-    { key: "account_status", title: "User Status" },
+    {
+      key: "user_type",
+      title: "Type",
+      render: (_, record) => <UserTypeTag userType={record.user_type} />
+    },
+    {
+      key: "account_status",
+      title: "Account Status",
+      render: (_, record) => <StatusTag status={record.account_status ?? "—"} variant="user" />
+    },
     {
       key: "is_locked",
       title: "Locked",
@@ -132,7 +142,7 @@ export const UsersPage = () => {
       onClick: (user) =>
         updateUserMutation.mutate({
           userId: user.id,
-          user_status: "active"
+          account_status: "active"
         })
     },
     {
@@ -142,16 +152,7 @@ export const UsersPage = () => {
       onClick: (user) =>
         updateUserMutation.mutate({
           userId: user.id,
-          user_status: "blocked"
-        })
-    },
-    {
-      key: "status-inactive",
-      label: "Set status: Inactive",
-      onClick: (user) =>
-        updateUserMutation.mutate({
-          userId: user.id,
-          user_status: "inactive"
+          account_status: "blocked"
         })
     },
     {
@@ -160,7 +161,7 @@ export const UsersPage = () => {
       onClick: (user) =>
         updateUserMutation.mutate({
           userId: user.id,
-          user_status: "pending"
+          account_status: "pending"
         })
     }
   ];
