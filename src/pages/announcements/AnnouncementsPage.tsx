@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button, DatePicker, Input, Select, Space, notification } from "antd";
+import { Button, DatePicker, Image, Input, Select, Space, Tooltip, Typography, notification } from "antd";
 import { apiClient } from "../../api/client";
 import { DataTable, DataTableColumn, RowAction } from "../../components/table/DataTable";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
@@ -23,6 +23,8 @@ interface Announcement {
   group?: { name_am?: string };
   item?: { name_am?: string };
   owner?: { full_name?: string };
+  images?: string[] | { url: string }[];
+  image_urls?: string[];
 }
 
 type CategoryFilter = "goods" | "rent" | "service";
@@ -153,6 +155,11 @@ export const AnnouncementsPage = () => {
     }
   };
 
+  const imageUrls = (a: Announcement): string[] => {
+    const raw = a.images ?? a.image_urls ?? [];
+    return raw.map((x) => (typeof x === "string" ? x : x?.url)).filter(Boolean);
+  };
+
   const columns: DataTableColumn<Announcement>[] = [
     { key: "type", title: "Type" },
     { key: "category", title: "Category" },
@@ -165,6 +172,48 @@ export const AnnouncementsPage = () => {
       key: "item",
       title: "Item",
       render: (_, record) => record.item?.name_am ?? "-"
+    },
+    {
+      key: "description",
+      title: "Description",
+      render: (_, record) => {
+        const text = record.description?.trim() || "—";
+        if (text === "—") return text;
+        return (
+          <Tooltip title={text}>
+            <Typography.Text ellipsis style={{ maxWidth: 220 }}>
+              {text}
+            </Typography.Text>
+          </Tooltip>
+        );
+      }
+    },
+    {
+      key: "images",
+      title: "Images",
+      render: (_, record) => {
+        const urls = imageUrls(record);
+        if (urls.length === 0) return "—";
+        return (
+          <Image.PreviewGroup>
+            <Space size={4} wrap>
+              {urls.slice(0, 5).map((url, i) => (
+                <Image
+                  key={i}
+                  src={url}
+                  alt=""
+                  width={40}
+                  height={40}
+                  style={{ objectFit: "cover", borderRadius: 4 }}
+                />
+              ))}
+              {urls.length > 5 && (
+                <Typography.Text type="secondary">+{urls.length - 5}</Typography.Text>
+              )}
+            </Space>
+          </Image.PreviewGroup>
+        );
+      }
     },
     {
       key: "status",
